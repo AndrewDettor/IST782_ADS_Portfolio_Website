@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Andrew's Data Science Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-card: #f4f7f4;
+      --bg-card-hover: #eaf0ea;
+      --text: #1a2e1a;
+      --text-muted: #5a6e5a;
+      --accent: #2e7d32;
+      --accent-glow: rgba(46, 125, 50, 0.12);
+      --accent-secondary: #1b5e20;
+      --border: #d4ddd4;
+      --border-hover: #b8c8b8;
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---- NAV ---- */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow 0.3s;
+    }
+    nav.scrolled { box-shadow: 0 4px 30px rgba(0,0,0,0.08); }
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--text); }
+    .hamburger { display: none; background: none; border: none; color: var(--text); cursor: pointer; }
+
+    /* ---- HERO ---- */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 700px; }
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.2s forwards;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 400;
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.4s forwards;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 0 auto 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.6s forwards;
+    }
+    .hero-cta {
+      display: inline-flex;
+      gap: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.8s forwards;
+    }
+    .hero-cta a {
+      padding: 0.7rem 1.8rem;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+    }
+    .btn-primary:hover { box-shadow: 0 0 24px var(--accent-glow); transform: translateY(-1px); }
+    .btn-ghost {
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-ghost:hover { border-color: var(--text-muted); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---- SECTIONS ---- */
+    section { padding: 5rem 2rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 400;
+      margin-bottom: 1.5rem;
+    }
+    .section-desc {
+      color: var(--text-muted);
+      max-width: 640px;
+      margin-bottom: 3rem;
+      font-size: 1.02rem;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    /* ---- OVERVIEW ---- */
+    .outcomes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2rem;
+    }
+    .outcome-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.8rem;
+      transition: all 0.25s;
+    }
+    .outcome-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+    .outcome-num {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+      letter-spacing: 0.08em;
+    }
+    .outcome-card h3 {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+    }
+    .outcome-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .outcome-tag {
+      display: inline-block;
+      margin-top: 0.8rem;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--accent-secondary);
+      background: rgba(46, 125, 50, 0.08);
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      letter-spacing: 0.03em;
+    }
+
+    /* ---- PROJECTS ---- */
+    .project-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 2.2rem;
+      margin-bottom: 1.25rem;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .project-card:hover { background: var(--bg-card-hover); border-color: var(--border-hover); }
+    .project-card:hover::before { opacity: 1; }
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .project-card h3 {
+      font-family: var(--font-body);
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+    .project-meta {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .project-card p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+    .tech-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .tech-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: rgba(46, 125, 50, 0.06);
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+    }
+
+    /* ---- VIDEO ---- */
+    .video-section { text-align: center; }
+    .video-wrapper {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .video-placeholder {
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .video-placeholder svg { opacity: 0.4; }
+    .video-note {
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* ---- BLOG ---- */
+    .blog-content {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .blog-content h2 {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 400;
+      margin: 3rem 0 1rem;
+    }
+    .blog-content h2:first-of-type { margin-top: 0; }
+    .blog-content p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 1.2rem;
+      line-height: 1.8;
+    }
+    .blog-content .placeholder {
+      background: rgba(46, 125, 50, 0.06);
+      border-left: 3px solid var(--accent);
+      padding: 1rem 1.4rem;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.88rem;
+      color: var(--accent);
+      font-style: italic;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ---- FOOTER ---- */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    footer p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.97);
+        padding: 1.5rem 2rem;
+        gap: 1.2rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .hamburger { display: block; }
+      .hero { min-height: 80vh; }
+      section { padding: 3.5rem 1.5rem; }
+      .project-header { flex-direction: column; }
+    }
+
+    /* ---- SCROLL REVEAL ---- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.5s, transform 0.5s;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <div class="nav-logo">portfolio://andrew</div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#video">Video</a></li>
+        <li><a href="#blog">Blog</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-label">Syracuse University &middot; M.S. Applied Data Science</div>
+      <h1>Data Science Portfolio</h1>
+      <p>A collection of projects, reflections, and outcomes from my graduate studies in Applied Data Science.</p>
+      <div class="hero-cta">
+        <a href="#overview" class="btn-primary">Explore Portfolio</a>
+        <a href="#blog" class="btn-ghost">Read the Blog</a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- OVERVIEW -->
+  <section id="overview">
+    <div class="container">
+      <div class="section-label reveal">01 &mdash; Overview</div>
+      <h2 class="section-title reveal">Program Learning Outcomes</h2>
+      <p class="section-desc reveal">
+        The M.S. in Applied Data Science program is built around a core set of learning outcomes. Below is each outcome, how I achieved it, and which projects demonstrate it.
+      </p>
+
+      <div class="outcomes-grid">
+
+        <!-- TODO: Replace with your actual program learning outcomes -->
+        <div class="outcome-card reveal">
+          <div class="outcome-num">PLO 01</div>
+          <h3>Collect, Store &amp; Access Data</h3>
+          <p>Ability to collect, store, and access data by identifying and leveraging applicable technologies.</p>
+          <span class="outcome-tag">YouTube ETL &middot; USAA GenAI</span>
+        </div>
+
+        <div class="outcome-card reveal">
+          <div class="outcome-num">PLO 02</div>
+          <h3>Create Actionable Insight</h3>
+          <p>Create actionable insight across a range of contexts using data and the full data science life cycle.</p>
+          <span class="outcome-tag">NYC Crime Analysis &middot; Capstone</span>
+        </div>
+
+        <div class="outcome-card reveal">
+          <div class="outcome-num">PLO 03</div>
+          <h3>Apply Visualization &amp; Communication</h3>
+          <p>Apply visualization and predictive models to help generate actionable insight.</p>
+          <span class="outcome-tag">Tableau Dashboards &middot; Capstone</span>
+        </div>
+
+        <div class="outcome-card reveal">
+          <div class="outcome-num">PLO 04</div>
+          <h3>Machine Learning &amp; NLP</h3>
+          <p>Use machine learning and NLP techniques to build models that solve real-world problems.</p>
+          <span class="outcome-tag">JP Morgan ML &middot; RAG System</span>
+        </div>
+
+        <div class="outcome-card reveal">
+          <div class="outcome-num">PLO 05</div>
+          <h3>Ethical Data Science</h3>
+          <p>Understand and apply ethical considerations in data collection, analysis, and model deployment.</p>
+          <span class="outcome-tag">CS:GO Ethics Reflection</span>
+        </div>
+
+        <div class="outcome-card reveal">
+          <div class="outcome-num">PLO 06</div>
+          <h3>Communicate to Stakeholders</h3>
+          <p>Effectively communicate technical findings to both technical and non-technical audiences.</p>
+          <span class="outcome-tag">All Projects</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="container">
+      <div class="section-label reveal">02 &mdash; Projects</div>
+      <h2 class="section-title reveal">Project Descriptions</h2>
+      <p class="section-desc reveal">
+        Each project below contributed to one or more program learning outcomes. Click through for details, code, and key takeaways.
+      </p>
+
+      <!-- TODO: Replace placeholder descriptions with your real content -->
+
+      <div class="project-card reveal">
+        <div class="project-header">
+          <h3>Air &amp; Water Quality Effects on Crop Production (Capstone)</h3>
+          <span class="project-meta">Capstone &middot; 2025</span>
+        </div>
+        <p>
+          [Describe your capstone project here. What was the research question? What data did you use? What were the main findings? How did you analyze air and water quality indicators against crop yield data across regions in India?]
+        </p>
+        <div class="tech-tags">
+          <span class="tech-tag">Python</span>
+          <span class="tech-tag">Regression</span>
+          <span class="tech-tag">Tableau</span>
+          <span class="tech-tag">Data Wrangling</span>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-header">
+          <h3>NYC Arrest &amp; Crime Analysis (Pre/During/Post-COVID)</h3>
+          <span class="project-meta">IST 719 &middot; 2025</span>
+        </div>
+        <p>
+          [Describe the NYC crime analysis project. How did you blend arrest data, unemployment, population, and income datasets? What patterns emerged across the COVID periods? What did the choropleth maps reveal?]
+        </p>
+        <div class="tech-tags">
+          <span class="tech-tag">Tableau</span>
+          <span class="tech-tag">Data Blending</span>
+          <span class="tech-tag">Choropleth Maps</span>
+          <span class="tech-tag">Python</span>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-header">
+          <h3>JP Morgan &mdash; Customer Call Intent Classification</h3>
+          <span class="project-meta">Internship &middot; 2024</span>
+        </div>
+        <p>
+          [Describe the ML model you built to classify customer call intent. What techniques did you use? What was the impact? How did you handle data cleaning challenges?]
+        </p>
+        <div class="tech-tags">
+          <span class="tech-tag">NLP</span>
+          <span class="tech-tag">Classification</span>
+          <span class="tech-tag">Python</span>
+          <span class="tech-tag">ML Pipeline</span>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-header">
+          <h3>USAA &mdash; GenAI Financial Assistant</h3>
+          <span class="project-meta">Internship &middot; 2024</span>
+        </div>
+        <p>
+          [Describe the GenAI financial assistant project. What problem did it solve? What was your role in building it? What technologies powered it?]
+        </p>
+        <div class="tech-tags">
+          <span class="tech-tag">GenAI</span>
+          <span class="tech-tag">LLMs</span>
+          <span class="tech-tag">Python</span>
+          <span class="tech-tag">Financial Data</span>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-header">
+          <h3>RAG System for Syracuse University Financial Reports</h3>
+          <span class="project-meta">IST 700 &middot; 2025</span>
+        </div>
+        <p>
+          [Describe your RAG system. How did you use Gemma-3-1b-it? What retrieval strategy did you use? What did you learn about building local LLM pipelines?]
+        </p>
+        <div class="tech-tags">
+          <span class="tech-tag">RAG</span>
+          <span class="tech-tag">Gemma 3</span>
+          <span class="tech-tag">Embeddings</span>
+          <span class="tech-tag">LLM</span>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-header">
+          <h3>YouTube ETL Pipeline</h3>
+          <span class="project-meta">Personal Project</span>
+        </div>
+        <p>
+          [Describe the YouTube ETL pipeline. What data did you extract, how did you transform it, and where did you load it? What was the purpose?]
+        </p>
+        <div class="tech-tags">
+          <span class="tech-tag">ETL</span>
+          <span class="tech-tag">API</span>
+          <span class="tech-tag">Python</span>
+          <span class="tech-tag">Data Engineering</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- VIDEO -->
+  <section id="video" class="video-section">
+    <div class="container">
+      <div class="section-label reveal">03 &mdash; Video Presentation</div>
+      <h2 class="section-title reveal">Program Reflection</h2>
+      <p class="section-desc reveal" style="margin-left:auto; margin-right:auto;">
+        A 1&ndash;2 minute video summarizing my overall thoughts on the program and what I learned.
+      </p>
+
+      <div class="video-wrapper reveal">
+        <!-- TODO: Replace this placeholder with your actual embedded video -->
+        <!-- Example for YouTube: -->
+        <!-- <iframe width="100%" style="aspect-ratio:16/9;" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allowfullscreen></iframe> -->
+        <div class="video-placeholder">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          <span>Embed your video here</span>
+        </div>
+      </div>
+      <p class="video-note reveal">Replace the placeholder above with a YouTube or Vimeo embed, or link to an uploaded .mp4.</p>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- BLOG -->
+  <section id="blog">
+    <div class="container">
+      <div class="section-label reveal">04 &mdash; Blog Post</div>
+      <h2 class="section-title reveal">Reflections on the Program</h2>
+
+      <div class="blog-content reveal">
+
+        <div class="placeholder">
+          This section is your ~3,000-word blog post. Replace the headers and placeholder text below with your actual reflections. The structure below follows the suggested topics from the assignment.
+        </div>
+
+        <h2>What I Expected to Learn</h2>
+        <p>
+          [Write about your expectations coming into the M.S. in Applied Data Science program. What skills did you hope to develop? What knowledge gaps did you want to fill? What drew you to Syracuse specifically?]
+        </p>
+
+        <h2>What I Actually Learned</h2>
+        <p>
+          [Discuss the reality vs. expectations. Walk through each learning outcome and how you achieved it. Be specific about courses, projects, and moments that shaped your understanding.]
+        </p>
+
+        <h2>Three Key Projects</h2>
+        <p>
+          [Pick three projects and describe how each one contributed to your education. Good candidates: the capstone, JP Morgan internship work, and the RAG system or NYC crime analysis. Focus on what you learned, not just what you built.]
+        </p>
+
+        <h2>Internship &amp; Outside Experience</h2>
+        <p>
+          [Discuss your internships at JP Morgan and USAA. How did real-world experience compare to coursework? What did you learn about working with production data, stakeholders, and business constraints?]
+        </p>
+
+        <h2>Favorite Class</h2>
+        <p>
+          [Which class stood out and why? What made it different from others? Was it the material, the instructor, the projects, or the way it challenged you?]
+        </p>
+
+        <h2>Best Parts &amp; Biggest Surprises</h2>
+        <p>
+          [Reflect on the highlights and the things you didn't expect. This is a good place to be honest about both the strengths of the program and the things that caught you off guard.]
+        </p>
+
+        <h2>Looking Ahead</h2>
+        <p>
+          [Where do you go from here? How has the program shaped your career goals and how you think about data science? What areas do you want to keep exploring?]
+        </p>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Andrew &middot; Syracuse University &middot; M.S. Applied Data Science &middot; 2025</p>
+    <p style="margin-top:0.5rem;">
+      <a href="https://github.com/YOUR_USERNAME" target="_blank">GitHub</a>
+      &nbsp;&middot;&nbsp;
+      <a href="https://linkedin.com/in/YOUR_PROFILE" target="_blank">LinkedIn</a>
+    </p>
+  </footer>
+
+  <script>
+    // Nav scroll effect
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // Hamburger
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+    // Active nav link
+    const sections = document.querySelectorAll('section[id]');
+    const links = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 120) current = s.getAttribute('id');
+      });
+      links.forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+      });
+    });
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
