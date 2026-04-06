@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Andrew's Data Science Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg-card: #f4f7f4;
+      --bg-card-hover: #eaf0ea;
+      --text: #1a2e1a;
+      --text-muted: #5a6e5a;
+      --accent: #2e7d32;
+      --accent-glow: rgba(46, 125, 50, 0.12);
+      --accent-secondary: #1b5e20;
+      --border: #d4ddd4;
+      --border-hover: #b8c8b8;
+      --font-display: 'DM Serif Display', Georgia, serif;
+      --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-weight: 300;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ---- NAV ---- */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow 0.3s;
+    }
+    nav.scrolled { box-shadow: 0 4px 30px rgba(0,0,0,0.08); }
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--accent);
+      letter-spacing: 0.05em;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--text); }
+    .hamburger { display: none; background: none; border: none; color: var(--text); cursor: pointer; }
+
+    /* ---- HERO ---- */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 700px; }
+    .hero-label {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.2s forwards;
+    }
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(2.4rem, 5vw, 3.8rem);
+      font-weight: 400;
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.4s forwards;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 520px;
+      margin: 0 auto 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.6s forwards;
+    }
+    .hero-cta {
+      display: inline-flex;
+      gap: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.8s forwards;
+    }
+    .hero-cta a {
+      padding: 0.7rem 1.8rem;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #ffffff;
+    }
+    .btn-primary:hover { box-shadow: 0 0 24px var(--accent-glow); transform: translateY(-1px); }
+    .btn-ghost {
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .btn-ghost:hover { border-color: var(--text-muted); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ---- SECTIONS ---- */
+    section { padding: 5rem 2rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      font-weight: 400;
+      margin-bottom: 1.5rem;
+    }
+    .section-desc {
+      color: var(--text-muted);
+      max-width: 640px;
+      margin-bottom: 3rem;
+      font-size: 1.02rem;
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    /* ---- OVERVIEW ---- */
+    .outcomes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.25rem;
+      margin-top: 2rem;
+    }
+    .outcome-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.8rem;
+      transition: all 0.25s;
+    }
+    .outcome-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+    .outcome-num {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+      letter-spacing: 0.08em;
+    }
+    .outcome-card h3 {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+    }
+    .outcome-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .outcome-tag {
+      display: inline-block;
+      margin-top: 0.8rem;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--accent-secondary);
+      background: rgba(46, 125, 50, 0.08);
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      letter-spacing: 0.03em;
+    }
+
+    /* ---- PROJECTS ---- */
+    .project-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 2.2rem;
+      margin-bottom: 1.25rem;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--accent);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .project-card:hover { background: var(--bg-card-hover); border-color: var(--border-hover); }
+    .project-card:hover::before { opacity: 1; }
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .project-card h3 {
+      font-family: var(--font-body);
+      font-size: 1.15rem;
+      font-weight: 600;
+    }
+    .project-meta {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .project-card p {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+    .tech-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .tech-tag {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      background: rgba(46, 125, 50, 0.06);
+      border: 1px solid var(--border);
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+    }
+
+    /* ---- VIDEO ---- */
+    .video-section { text-align: center; }
+    .video-wrapper {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .video-placeholder {
+      aspect-ratio: 16 / 9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .video-placeholder svg { opacity: 0.4; }
+    .video-note {
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* ---- BLOG ---- */
+    .blog-content {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .blog-content h2 {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 400;
+      margin: 3rem 0 1rem;
+    }
+    .blog-content h2:first-of-type { margin-top: 0; }
+    .blog-content p {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 1.2rem;
+      line-height: 1.8;
+    }
+    .blog-content .placeholder {
+      background: rgba(46, 125, 50, 0.06);
+      border-left: 3px solid var(--accent);
+      padding: 1rem 1.4rem;
+      border-radius: 0 6px 6px 0;
+      font-size: 0.88rem;
+      color: var(--accent);
+      font-style: italic;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ---- FOOTER ---- */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    footer p {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ---- RESPONSIVE ---- */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 64px;
+        left: 0;
+        right: 0;
+        background: rgba(255, 255, 255, 0.97);
+        padding: 1.5rem 2rem;
+        gap: 1.2rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .hamburger { display: block; }
+      .hero { min-height: 80vh; }
+      section { padding: 3.5rem 1.5rem; }
+      .project-header { flex-direction: column; }
+    }
+
+    /* ---- SCROLL REVEAL ---- */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.5s, transform 0.5s;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <div class="nav-inner">
+      <div class="nav-logo">portfolio://andrew</div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#video">Video</a></li>
+        <li><a href="#blog">Blog</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-label">Syracuse University &middot; M.S. Applied Data Science</div>
+      <h1>Data Science Portfolio</h1>
+      <p>A collection of projects, reflections, and outcomes from my graduate studies in Applied Data Science.</p>
+      <div class="hero-cta">
+        <a href="#overview" class="btn-primary">Explore Portfolio</a>
+        <a href="#blog" class="btn-ghost">Read the Blog</a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- OVERVIEW -->
+  <section id="overview">
+    <div class="container">
+      <div class="section-label reveal">01 &mdash; Overview</div>
+      <h2 class="section-title reveal">Program Learning Outcomes</h2>
+      <p class="section-desc reveal">
+        The M.S. in Applied Data Science program is built around six learning outcomes. Below is each outcome and a description of what it means.
+      </p>
+
+      <div class="outcomes-grid">
+
+        <div class="outcome-card reveal">
+          <div class="outcome-num">PLO 01</div>
+          <h3>Collect, Store &amp; Access Data</h3>
+          <p>Collect, store, and access data by identifying and leveraging applicable technologies. This means working with databases, cloud storage, APIs, and other tools depending on the data format and scale.</p>
+        </div>
+
+        <div class="outcome-card reveal">
+          <div class="outcome-num">PLO 02</div>
+          <h3>Create Actionable Insight</h3>
+          <p>Create actionable insight across a range of contexts (societal, business, political) using data and the full data science life cycle. The goal is to produce something useful that helps people make real decisions.</p>
+        </div>
+
+        <div class="outcome-card reveal">
+          <div class="outcome-num">PLO 03</div>
+          <h3>Visualization &amp; Predictive Models</h3>
+          <p>Apply visualization and predictive models to help generate actionable insight. Visualizations make patterns easier to find, and predictive models let you draw conclusions while accounting for multiple variables.</p>
+        </div>
+
+        <div class="outcome-card reveal">
+          <div class="outcome-num">PLO 04</div>
+          <h3>Programming in R &amp; Python</h3>
+          <p>Use programming languages such as R and Python to support the generation of actionable insight. These are the primary languages in data science, essential for cleaning, analyzing, and modeling data.</p>
+        </div>
+
+        <div class="outcome-card reveal">
+          <div class="outcome-num">PLO 05</div>
+          <h3>Communicate Insights</h3>
+          <p>Communicate insights gained via visualization and analytics to a broad range of audiences, including project sponsors and technical team leads. Analysis only matters if you can convey it clearly.</p>
+        </div>
+
+        <div class="outcome-card reveal">
+          <div class="outcome-num">PLO 06</div>
+          <h3>Ethics in Data Science</h3>
+          <p>Apply ethics in the development, use, and evaluation of data and predictive models, covering fairness, bias, transparency, and privacy. Improper use of data science has real consequences.</p>
+        </div>
+
+      </div>
+
+      <!-- High-level project summaries -->
+      <h3 class="section-title reveal" style="font-size:1.4rem; margin-top:3.5rem;">Portfolio Projects at a Glance</h3>
+      <p class="section-desc reveal">Each project in my portfolio addressed all six of the program learning outcomes. Below is a summary of each project and how it connects to the outcomes above.</p>
+
+      <div class="outcomes-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+        <div class="outcome-card reveal">
+          <div class="outcome-num">PROJECT 01</div>
+          <h3>eSC Energy Demand Forecasting</h3>
+          <p>A group project for IST 687 that helped a hypothetical electric utility in South Carolina anticipate and manage peak summer energy demand. Used AWS S3 data, R, and XGBoost to identify consumption drivers and give customers actionable ways to reduce usage.</p>
+          <p style="font-size:0.82rem; color:var(--accent); margin-top:0.8rem; line-height:1.6;"><strong>Demonstrates all 6 PLOs:</strong> Accessed cloud-stored data from AWS S3 (1). Applied the full data science life cycle to an energy industry problem (2). Built and compared XGBoost, CART, and Linear Regression models (3). Used R for all cleaning, analysis, and modeling (4). Communicated results in a written report for a technical audience (5). Used anonymized data, low-bias models, and stratified sampling to avoid target leakage (6).</p>
+        </div>
+        <div class="outcome-card reveal">
+          <div class="outcome-num">PROJECT 02</div>
+          <h3>Air &amp; Water Quality Effects on Crop Production in India</h3>
+          <p>A group project for IST 707 that examined how air and water quality affect rice production across Indian states. Used six datasets from Kaggle and ICRISAT, Python, fuzzy string matching, and a hierarchical mixed effects model to produce evidence for pollution control policy.</p>
+          <p style="font-size:0.82rem; color:var(--accent); margin-top:0.8rem; line-height:1.6;"><strong>Demonstrates all 6 PLOs:</strong> Collected and integrated data from multiple public sources including Kaggle and ICRISAT (1). Applied the full life cycle to a real policy problem in agriculture (2). Built a hierarchical mixed effects model for statistical inference (3). Used Python for cleaning, fuzzy matching, imputation, and modeling (4). Communicated findings to both technical and non-technical audiences (5). Addressed imputation bias, causality limitations, and impacts on smaller farms (6).</p>
+        </div>
+        <div class="outcome-card reveal">
+          <div class="outcome-num">PROJECT 03</div>
+          <h3>Drugs in Powerlifting: Worth It?</h3>
+          <p>An individual project for IST 719 that analyzed 3.6 million rows of competition data from OpenPowerlifting to determine whether PEDs provide a meaningful competitive advantage. Used R and the tidyverse to produce a designed poster with a clear, data-driven conclusion.</p>
+          <p style="font-size:0.82rem; color:var(--accent); margin-top:0.8rem; line-height:1.6;"><strong>Demonstrates all 6 PLOs:</strong> Collected and filtered a 3.6M-row dataset from OpenPowerlifting (1). Generated actionable insight for athletes on PED risk-reward (2). Applied visualization to communicate findings through a designed poster (3). Used R with tidyverse and ggrepel for all analysis (4). Presented results clearly to a non-technical audience of athletes and coaches (5). Framed drug use in an unbiased, transparent, data-driven light (6).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="container">
+      <div class="section-label reveal">02 &mdash; Projects</div>
+      <h2 class="section-title reveal">Project Descriptions</h2>
+      <p class="section-desc reveal">
+        Below are detailed descriptions of each project, including the problem, my contributions, the findings, and the learning outcomes each project addressed.
+      </p>
+
+      <div class="project-card reveal">
+        <div class="project-header">
+          <h3>eSC Energy Demand Forecasting and Optimization</h3>
+          <span class="project-meta">IST 687 &middot; Group Project</span>
+        </div>
+        <p>
+          The goal of this project was to help eSC, a hypothetical electric utility provider in South Carolina and parts of North Carolina, anticipate and manage energy demand during peak summer months. Rather than recommending costly infrastructure expansions, we focused on identifying the key drivers of energy consumption and providing customers with actionable ways to reduce their usage during high-demand periods.
+        </p>
+        <p>
+          The project used CSV data stored in AWS S3 buckets, including building-level attributes, hourly energy consumption records, and county-level weather data. R was used throughout for data cleaning, exploratory analysis, visualization, and modeling. Three machine learning models were trained and evaluated: Linear Regression, CART Tree, and XGBoost. XGBoost was selected as the final model based on its performance, achieving a mean absolute error of 0.36 kWh on the test set.
+        </p>
+        <p>
+          My contribution was primarily data cleaning and processing. I reduced the building dataset from 171 columns to a usable set of 53 by removing zero-variance columns, reviewing and dropping uninformative features, and splitting combined columns into separate fields. I also handled the joining of all three datasets, merging building attributes, hourly energy records for all 5,710 buildings, and county-level weather data into a single dataframe of over four million rows ready for analysis.
+        </p>
+        <p>
+          The analysis found that homes with lower hot water usage, solar panels, finished basements, and fuel oil or propane heating systems consistently showed lower energy consumption. By educating customers on these factors, eSC could reduce peak demand without investing in new infrastructure, saving customers money on their energy bills in the process.
+        </p>
+        <div class="tech-tags">
+          <span class="tech-tag">R</span>
+          <span class="tech-tag">XGBoost</span>
+          <span class="tech-tag">CART</span>
+          <span class="tech-tag">AWS S3</span>
+          <span class="tech-tag">Data Wrangling</span>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-header">
+          <h3>Effect of Air and Water Quality on Crop Production in India</h3>
+          <span class="project-meta">IST 707 &middot; Group Project</span>
+        </div>
+        <p>
+          This project set out to understand how air and water quality affect rice production across India, and to give institutions like State Pollution Control Boards and agricultural extension services quantitative evidence they could use to make policy decisions.
+        </p>
+        <p>
+          We pulled four datasets from Kaggle and two from the ICRISAT data portal, covering air quality, water quality, crop production, irrigation, rainfall, and farm size across Indian states and districts spanning several decades. Python was used for all data cleaning, aggregation, joining, and modeling.
+        </p>
+        <p>
+          I contributed in two main areas. On the data side, I handled most of the cleaning and joining of the six datasets into a single usable table. This was tricky because each dataset was sampled at a different geographic and temporal level, so I had to aggregate everything to the yearly district level, use fuzzy string matching to resolve spelling inconsistencies in state and district names, and apply hierarchical imputation to deal with significant missing data across several key columns. I also built the hierarchical mixed effects model used for statistical inference. The model accounted for the nested structure of the data by grouping at the state level with district-level random slopes on year, producing more accurate coefficient estimates and p-values than a standard regression would have.
+        </p>
+        <p>
+          The analysis found that AQI, water pH, and water conductivity all had statistically significant negative effects on rice production, even after controlling for rainfall and farm size. This gives pollution control boards a concrete agricultural justification for tightening emissions and water quality standards beyond just health outcomes.
+        </p>
+        <div class="tech-tags">
+          <span class="tech-tag">Python</span>
+          <span class="tech-tag">Mixed Effects Model</span>
+          <span class="tech-tag">Fuzzy Matching</span>
+          <span class="tech-tag">Hierarchical Imputation</span>
+          <span class="tech-tag">Kaggle</span>
+          <span class="tech-tag">ICRISAT</span>
+        </div>
+      </div>
+
+      <div class="project-card reveal">
+        <div class="project-header">
+          <h3>Drugs in Powerlifting: Worth It?</h3>
+          <span class="project-meta">IST 719 &middot; Individual Project</span>
+        </div>
+        <p>
+          The goal of this project was to use powerlifting competition data to examine whether performance-enhancing drugs (PEDs) provide a meaningful competitive advantage, and to present the findings in a way that athletes, coaches, and casual gym-goers could understand and act on.
+        </p>
+        <p>
+          The data came from OpenPowerlifting.org and included 3.6 million rows of competition results since 1995. I narrowed the analysis to the USPA federation, which is the only federation with both tested and untested divisions, then filtered to lifters using no additional equipment and used their best meet performance. All analysis and visualization was done in R using the tidyverse and ggrepel packages, and the final deliverable was a designed poster.
+        </p>
+        <p>
+          The main finding was that PEDs provide surprisingly little advantage at most levels of competition. The median squat and deadlift differences between tested and untested divisions were small, and the bench press difference was only about 16.5 lbs. The gap becomes more noticeable at the elite end, particularly above 200 lbs bodyweight, where the untested group pulls ahead more clearly. The practical takeaway for most athletes is that PED use is unlikely to change where they place in a competition, and the risk-reward ratio does not make sense unless competing at a world-class level.
+        </p>
+        <div class="tech-tags">
+          <span class="tech-tag">R</span>
+          <span class="tech-tag">tidyverse</span>
+          <span class="tech-tag">ggrepel</span>
+          <span class="tech-tag">Poster Design</span>
+          <span class="tech-tag">OpenPowerlifting</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- VIDEO -->
+  <section id="video" class="video-section">
+    <div class="container">
+      <div class="section-label reveal">03 &mdash; Video Presentation</div>
+      <h2 class="section-title reveal">Program Reflection</h2>
+      <p class="section-desc reveal" style="margin-left:auto; margin-right:auto;">
+        A 1&ndash;2 minute video summarizing my overall thoughts on the program and what I learned.
+      </p>
+
+      <div class="video-wrapper reveal">
+        <!-- TODO: Replace this placeholder with your actual embedded video -->
+        <!-- Example for YouTube: -->
+        <!-- <iframe width="100%" style="aspect-ratio:16/9;" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allowfullscreen></iframe> -->
+        <div class="video-placeholder">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          <span>Embed your video here</span>
+        </div>
+      </div>
+      <p class="video-note reveal">Replace the placeholder above with a YouTube or Vimeo embed, or link to an uploaded .mp4.</p>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <!-- BLOG -->
+  <section id="blog">
+    <div class="container">
+      <div class="section-label reveal">04 &mdash; Blog Post</div>
+      <h2 class="section-title reveal">Reflections on the Program</h2>
+
+      <div class="blog-content reveal">
+
+        <h2>What I Expected to Learn</h2>
+        <p>
+          When I started the M.S. in Applied Data Science at Syracuse, I had already finished my B.S. in Data Science and had a decent foundation in programming, statistics, and machine learning. I knew how to write Python and R, I had built models, and I had done enough coursework to feel comfortable with the basics. But I also knew there were gaps. I was weak at communicating my work. I would get deep into a project and struggle to explain it to someone who was not already familiar with the data and the methods. I also wanted more experience with the full data science life cycle, from collecting messy real-world data to producing something a business or organization could actually use. I was not just looking for more technical knowledge. I wanted to learn how to be a more complete data scientist.
+        </p>
+        <p>
+          I also came into the program hoping to get better at visualization. In undergrad I could make charts and graphs, but I did not think carefully about whether they told a clear story or whether my audience could actually understand them. I tended to overload my visuals with information. I wanted to fix that. On the modeling side, I was comfortable with standard regression and classification, but I had not worked much with more advanced techniques like hierarchical models or ensemble methods on large, messy datasets. I expected the program to push me in those areas.
+        </p>
+        <p>
+          Beyond the technical stuff, I was hoping the program would give me more project experience I could talk about concretely in interviews and on my resume. Having a portfolio of real projects where I could point to specific contributions and specific results felt more valuable than just listing courses on a transcript. That ended up being exactly what happened, though the path was not always what I expected.
+        </p>
+
+        <h2>What I Learned: The Six Learning Outcomes</h2>
+        <p>
+          The program has six learning outcomes, and I achieved all of them across my coursework and projects. Here is how each one played out.
+        </p>
+        <p>
+          The first outcome is about collecting, storing, and accessing data using applicable technologies. This came up in every project I worked on. In the eSC energy forecasting project, we pulled structured CSV files from AWS S3 buckets and had to merge three separate datasets covering buildings, energy usage, and weather. In the crop production project, we pulled data from Kaggle and ICRISAT and had to deal with the fact that each dataset was at a different geographic and temporal level. For the powerlifting project, I worked with a 3.6-million-row dataset from OpenPowerlifting.org. None of these were clean, ready-to-use datasets. Every one of them required significant work to get into a usable state.
+        </p>
+        <p>
+          The second outcome is about creating actionable insight across a range of contexts using the full data science life cycle. This is the one that changed how I think about data science the most. It is easy to do analysis for the sake of finding something interesting, but the program pushed me to always ask: who is going to use this, and what decision will it help them make? In the eSC project, the insight was for customers to reduce energy costs. In the crop production project, it was for pollution control boards to justify tighter emissions standards. In the powerlifting project, it was for athletes to understand that PEDs are not worth the risk at most levels. Each project had a different audience and a different kind of actionable takeaway.
+        </p>
+        <p>
+          The third outcome covers visualization and predictive modeling. The eSC project used XGBoost, CART trees, and linear regression, and we evaluated each one on the test set to choose the best performer. The crop production project used a hierarchical mixed effects model, which was the first time I built anything that accounted for nested data structure with random slopes. The powerlifting project was visualization-heavy, with the final deliverable being a designed poster that had to communicate the findings at a glance. The Visual Analytics track, specifically IST 719 and IST 737, was where I really leveled up on visualization. More on that below.
+        </p>
+        <p>
+          The fourth outcome is about programming in R and Python. Both languages were used extensively. R was the primary tool in IST 687 and IST 719, where I used it for data wrangling, modeling, and visualization with packages like tidyverse and ggrepel. Python was the primary tool in IST 707, where I used it for cleaning, fuzzy string matching, aggregation, and building the mixed effects model. By the end of the program I felt equally comfortable in both, which was not the case coming in. I had a strong Python preference in undergrad and had to warm up to R.
+        </p>
+        <p>
+          The fifth outcome is about communicating insights to a broad range of audiences. This was the outcome I targeted when choosing the Visual Analytics track, and it is probably the area where I grew the most. IST 719 taught me how to think about who is looking at a visualization and whether it tells a clear story. IST 737 extended that into interactive dashboards with Tableau. Before these courses, I would make a chart and call it done. Now I think about hierarchy, flow, and whether a non-technical person could look at my work and walk away understanding the main point.
+        </p>
+        <p>
+          The sixth outcome is about ethics. Every project touched on this differently. In the eSC project, we used anonymized data, avoided target leakage through stratified sampling, and chose low-bias models. In the crop production project, we had to think carefully about imputation bias, the limitations of causal claims from observational data, and the potential impact of policy recommendations on smaller farms. In the powerlifting project, I presented drug use in an unbiased, transparent light and gave a data-driven conclusion rather than a moral judgment. Ethics is not just a box to check. It requires thinking about who is affected by the work and what could go wrong.
+        </p>
+
+        <h2>Three Projects That Shaped My Education</h2>
+        <p>
+          The first project that stands out is the eSC Energy Demand Forecasting project from IST 687. This was my first real group data science project in the program, and it taught me a lot about what happens before the modeling even starts. My main contribution was data cleaning and processing: reducing 171 columns down to 53, removing zero-variance and uninformative features, splitting combined columns, and then merging three separate datasets into a single dataframe of over four million rows. That merging step alone took more time and thought than I expected. It made me realize that in practice, the data preparation phase is where most of the actual work happens. The modeling part, comparing XGBoost, CART, and linear regression, was almost the easy part by comparison. The project also gave me my first exposure to working with cloud-stored data in S3, which is now something I list on my resume and can speak to concretely.
+        </p>
+        <p>
+          The second project is the crop production and pollution study from IST 707. This was probably the most technically challenging project I did in the program. The data side was difficult because I had six datasets sampled at different geographic and temporal levels, with inconsistent spelling across state and district names. I used fuzzy string matching to resolve the naming issues and hierarchical imputation to handle missing data. On the modeling side, I built a hierarchical mixed effects model, which was new to me. A standard regression would have ignored the nested structure of the data (districts within states), so I used state-level grouping with district-level random slopes on year. The result was more trustworthy coefficient estimates and p-values. Finding that AQI, water pH, and water conductivity all had statistically significant negative effects on rice production gave the project a real policy implication. It was the first time I felt like a project I worked on could actually matter to someone outside of a classroom.
+        </p>
+        <p>
+          The third project is the powerlifting analysis from IST 719. This one was different because it was an individual project and the final deliverable was a designed poster rather than a report or notebook. I had to take 3.6 million rows of data, filter it down to the relevant subset, do the analysis, and then present everything in a single visual format that someone could understand in a few minutes. The finding itself was interesting: PEDs provide surprisingly little advantage for most lifters. But the real learning was in the design process. I had to make hard choices about what to include and what to cut, how to arrange the visuals so they told a coherent story, and how to write concise takeaways that a non-technical audience could follow. This project is the one where the communication skills I was building in the Visual Analytics track really came together.
+        </p>
+
+        <h2>Internship at USAA</h2>
+        <p>
+          During the summer of 2025, I interned as a CFO Data Intern at USAA in San Antonio, Texas. The internship was part of the Chief Financial Office Data and Analytics organization, which focuses on data governance, business intelligence, insight delivery, and data science in support of USAA's financial operations. It was my first time working in a finance-oriented data role, and it taught me things that no classroom project could have.
+        </p>
+        <p>
+          My work fell into two main areas. The first was around data lineage and metadata. I automated the process of tracing the lineage of cells in Excel-based UDAs (User Defined Applications) using Python. These Excel files were used across the CFO organization for financial reporting, and understanding which cells depended on which other cells was important for auditability and governance. Before I automated it, this was a manual process. I also queried CFO report metadata from Alation using SQL and cleaned it using Python and Pandas. That metadata work fed into a broader effort I helped with: designing a new, more comprehensive CFO Report Inventory. The goal was to give the organization a single source of truth for what reports existed, what data they contained, where the data came from, and who owned them. It was not glamorous work, but it was the kind of foundational data management that everything else depends on.
+        </p>
+        <p>
+          The second area was more technical and more exciting. I built a proof-of-concept LLM chatbot using Snowflake Cortex Analyst that let users ask natural language questions about financial report data. The idea was an "Ask the Data" tool where someone in the CFO organization could type a question and get an answer pulled from the report metadata, without needing to write SQL or dig through spreadsheets themselves. I also implemented a more robust AI assistant using retrieval augmented generation (RAG) with Python, Snowflake, and Streamlit. For that project, I created embeddings of the financial reports, extracted their metadata from Alation using SQL, and loaded both structured and unstructured data into a Snowflake database. The Streamlit front end let users interact with the assistant in a clean, simple interface. Building something that other people on the team could actually demo and use was a different experience from building a model for a homework assignment that only a professor will ever see.
+        </p>
+        <p>
+          The internship reinforced several things I had been learning in the program but had not experienced at scale. Data governance and metadata management are not topics that come up much in a data science curriculum, but in a large organization like USAA they are foundational. You cannot build good models or dashboards if the underlying data is not well documented, well governed, and well understood. I also got a much better sense of what it means to work within a regulated environment. USAA operates under strict compliance requirements, and every piece of data work has to account for internal policies, standards, and external regulations. That is a constraint I had never dealt with in school.
+        </p>
+        <p>
+          On the technical side, the internship gave me hands-on experience with tools I had only read about. Snowflake, Alation, and Streamlit were all new to me at the start of the summer. By the end, I was comfortable writing SQL against Snowflake, building data pipelines that moved both structured and unstructured data into cloud storage, and putting together front-end demos in Streamlit. The RAG project in particular tied together a lot of what I had been studying in my LLM coursework. Building a RAG system for Syracuse University financial reports in IST 700 was useful preparation, but doing it in a corporate environment with real data, real users, and real compliance constraints was a different challenge entirely.
+        </p>
+        <p>
+          The internship also gave me experience communicating with stakeholders who are not data scientists. Presenting to a manager who wants a clear bottom line is different from presenting to a professor who wants to see your methodology. At USAA, I had to explain what my tools did and why they mattered to people who cared about the business outcome, not the technical implementation. That skill, knowing your audience and adjusting your communication accordingly, is something the program emphasizes in theory, but the internship is where I actually practiced it under real pressure.
+        </p>
+
+        <h2>Favorite Class</h2>
+        <p>
+          My favorite class was IST 719, Information Visualization. It was the class that changed how I think about my work the most. Before taking it, I treated visualization as an afterthought. I would do the analysis, make some charts, and move on. IST 719 forced me to think about visualization as its own discipline. I learned about design principles, choosing the right chart type, and making visualizations intuitively understandable. More importantly, it pushed me to think about whether a visualization tells a clear story or just displays data. That distinction sounds simple, but it is hard to execute well.
+        </p>
+        <p>
+          The course used R and Adobe Illustrator, which was an unexpected combination. Working in Illustrator taught me to think about layout, typography, and visual hierarchy in a way that code-based plotting does not. The powerlifting poster project was the capstone of that learning. I had to take a complex analysis and distill it into a single designed artifact that someone could absorb in a few minutes. It was incredibly challenging, and it is the piece of work I am most proud of from the program.
+        </p>
+        <p>
+          IST 737, Visual Analytic Dashboards, built on that foundation by introducing Tableau and shifting the focus toward interactive exploration. The difference from IST 719 is that instead of showing a static visual, Tableau lets the user explore the data themselves. The course covered how to structure dashboards so that a user can draw their own conclusions rather than just being told what to think. Both courses together changed how I communicate and display my work. Getting the analytics right is only half the battle. The other half is making sure the findings are properly absorbed by the audience.
+        </p>
+
+        <h2>Best Parts and Biggest Surprises</h2>
+        <p>
+          The best part of the program was the project experience. By the end, I had a portfolio of real work I could point to in interviews and describe concretely. I could talk about specific datasets, specific models, specific results, and specific contributions. That is worth more than any grade or transcript line.
+        </p>
+        <p>
+          The biggest surprise was how much of real data science is not modeling. Coming in, I thought the hard part would be choosing the right algorithm or tuning hyperparameters. In practice, the hard part is almost always data preparation: cleaning, joining, resolving inconsistencies, handling missing values, and getting everything into a format where modeling is even possible. The eSC project and the crop production project both hammered this home. I spent far more time on data wrangling than on model training in both cases.
+        </p>
+        <p>
+          Another surprise was how much I got out of the Visual Analytics track. I chose it because communication was a weak point, and I expected it to be a nice supplement to my technical skills. It ended up being more transformative than that. It fundamentally changed how I approach presenting my work, and it gave me one of the most challenging and rewarding projects in the program. I did not expect a visualization class to push me harder than some of my machine learning courses, but it did.
+        </p>
+        <p>
+          That said, the program stayed at a higher level than I would have liked in some areas. Breadth is useful, but when you encounter a real problem in industry or sit across from a highly technical interviewer, gaps in deep understanding become obvious fast. I also wish the program had focused more on connecting data science to business contexts and provided more practice communicating to business stakeholders and managers. Some of these limitations are unavoidable in an academic setting. No program can fully prepare someone for production-scale data inside a real company with real constraints.
+        </p>
+
+        <h2>Looking Ahead</h2>
+        <p>
+          The program gave me a solid working understanding of data science. I am not an expert in everything, but I have a clearer sense of where my gaps are and enough project experience to speak concretely about what I know and the work I have done. I want to keep pushing deeper into machine learning and statistical modeling, areas where I feel I have a good foundation but not the depth I want. I am also interested in continuing to develop my skills with large language models and generative AI, which I got some exposure to through my internship work and coursework but want to explore further.
+        </p>
+        <p>
+          More than anything, I want to find a role where I can apply what I have learned to real problems with real stakes. The projects in this program showed me what that feels like, even in an academic context. The crop production project, where the analysis had a direct policy implication, was the most motivating work I did. I want more of that. I want to work on problems where the analysis actually matters to someone, and where I can see the impact of the decisions my work informs.
+        </p>
+        <p>
+          I am nowhere near perfect as a data scientist. But I know how to collect messy data, clean it, model it, visualize it, and communicate the results. I know how to think about ethics and audience and actionability. And I know where I still need to grow. That feels like a good place to be at the start of a career.
+        </p>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Andrew Dettor &middot; Syracuse University &middot; M.S. Applied Data Science &middot; 2026</p>
+    <p style="margin-top:0.5rem;">
+      <a href="https://github.com/YOUR_USERNAME" target="_blank">GitHub</a>
+      &nbsp;&middot;&nbsp;
+      <a href="https://linkedin.com/in/YOUR_PROFILE" target="_blank">LinkedIn</a>
+    </p>
+  </footer>
+
+  <script>
+    // Nav scroll effect
+    const nav = document.getElementById('nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // Hamburger
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+    // Active nav link
+    const sections = document.querySelectorAll('section[id]');
+    const links = document.querySelectorAll('.nav-links a');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(s => {
+        if (window.scrollY >= s.offsetTop - 120) current = s.getAttribute('id');
+      });
+      links.forEach(l => {
+        l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+      });
+    });
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
